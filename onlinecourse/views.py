@@ -118,11 +118,12 @@ def submit(request, course_id):
         questions = Question.objects.filter(course=course)
         enrollment = Enrollment.objects.get(user=user, course=course)
         submission = Submission.objects.create(enrollment=enrollment)
-
-
+        answers = extract_answers(request)
+        
+        submission.choices.set(answers)
+        submission_id = submission.id  
     
-
-    #return render(request, 'onlinecourse/course_detail_bootstrap.html', context  )
+    
     return HttpResponseRedirect(reverse(viewname='onlinecourse:exam_result', args=(course_id, submission_id,)))
  
 
