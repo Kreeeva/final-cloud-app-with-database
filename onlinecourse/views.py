@@ -147,20 +147,21 @@ def extract_answers(request):
 #def show_exam_result(request, course_id, submission_id):
 
 def show_exam_result(request, course_id, submission_id):
+    user = request.user
     course = get_object_or_404(Course, pk=course_id)
     submission = Submission.objects.get(id=submission_id)
     choices = submission.choices.all()
     questions = Question.objects.filter(course=course)
-    total_score = 0
+    score = 0
     overall_score = 0
     for choice in choices:
         if choice.is_correct:
-            total_score += choice.question.grade
+            score += choice.question.grade
     for question in questions:
         overall_score += question.grade
 
-    sucess =overall_score
-    return render(request, 'onlinecourse/exam_result_bootstrap.html', {"course":course, "grade":total_score,"choices":choices, "total":overall_score})  
+    success =(score/overall_score)*100
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', {"course":course, "grade":score,"choices":choices, "total":overall_score, "success":success})  
 
 
 
